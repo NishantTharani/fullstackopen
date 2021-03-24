@@ -1,18 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import phonebookService from "./services/phonebook"
 
-/*
-TO CHECK IN MODEL SOLUTION:
-- do they filter the same way i do, to avoid async state updating issues?
-- are the functions all defined in App still, like I have, with just the
-references passed to the components?
--- or, do they define the functions in the components where they are used?
--- but then, how does common state get passed around?
--- is common state passed by reference? in which case we can just pass it
-from parent to child for the functions in the child to operate on that state?
--- or, ooh, we can just pass the state updater together with the state?
- */
-
 const Filter = (props) => {
     const nameFilter = props.nameFilter
     const handleNameFilterChange = props.handleNameFilterChange
@@ -115,28 +103,50 @@ const App = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        const matches = persons.filter((person) =>
-            person.name === newName
-        )
-
-        if (matches.length > 0) {
-            alert(`${newName} is already added to phonebook`)
-            return
-        }
 
         const personObj = {
             name: newName,
             number: newNumber
         }
-        phonebookService.create(personObj)
-            .then(returnedPerson => {
-                setPersons(persons.concat(returnedPerson));
-                setNewName('');
-                setAddedMsg(`Added ${returnedPerson.name}`);
-                setTimeout(() => {
-                    setAddedMsg('');
-                }, 4000);
-            })
+
+        const matches = persons.filter((person) =>
+            person.name === newName
+        )
+
+        if (matches.length > 0) {
+            console.log(`Updating entry for ${newName}`);
+            phonebookService.updatePerson(matches[0].id, personObj)
+                .then(updatedPerson => {
+                    setPersons(persons.filter(person => person.name !== newName).concat(updatedPerson));
+                    setNewName('');
+                    setAddedMsg(`Updated ${personObj.name}`);
+                    setTimeout(() => {
+                        setAddedMsg('');
+                    }, 4000);
+                })
+                .catch(error => {
+                    setErrorMsg(error.response.data['error']);
+                    setTimeout(() => {
+                        setErrorMsg('');
+                    }, 4000);
+                })
+        } else {
+            phonebookService.create(personObj)
+                .then(newPerson => {
+                    setPersons(persons.concat(newPerson));
+                    setNewName('');
+                    setAddedMsg(`Added ${personObj.name}`);
+                    setTimeout(() => {
+                        setAddedMsg('');
+                    }, 4000);
+                })
+                .catch(error => {
+                    setErrorMsg(error.response.data['error']);
+                    setTimeout(() => {
+                        setErrorMsg('');
+                    }, 4000);
+                })
+        }
     }
 
     const handleDelete = (personId, name) => {
