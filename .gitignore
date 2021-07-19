@@ -3,6 +3,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,webstorm,react,reactnative,django,java,intellij
 
 .env
+.idea/
 
 ### Django ###
 *.log
