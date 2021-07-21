@@ -1,0 +1,27 @@
+### Create new user
+
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+  "username": "user",
+  "name": "First Last",
+  "password": "abcdefghijkl"
+}
+
+### Get users
+
+
+GET http://localhost:3003/api/users
+Accept: application/json
+
+
+### Create user without username
+
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+  "name": "First Last",
+  "password": "abcdefghijkl"
+}

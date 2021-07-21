@@ -5,10 +5,14 @@ const app = require('../app')
 const api = supertest(app)
 
 const Note = require('../models/note')
+const User = require('../models/user')
 
 beforeEach(async () => {
   await Note.deleteMany({})
   await Note.insertMany(helper.initialNotes)
+  await User.deleteMany({})
+  const initialUsers = await helper.getInitialUsers()
+  await User.insertMany(initialUsers)
 })
 
 describe('when there is initially some notes saved', () => {
@@ -72,7 +76,7 @@ describe('viewing a specific note', () => {
 })
 
 describe('addition of a new note', () => {
-  test('succeeds with valid data', async () => {
+  test('fails without authorization token', async () => {
     const newNote = {
       content: 'async/await simplifies making async calls',
       important: true,
@@ -81,17 +85,7 @@ describe('addition of a new note', () => {
     await api
       .post('/api/notes')
       .send(newNote)
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-
-
-    const notesAtEnd = await helper.notesInDb()
-    expect(notesAtEnd).toHaveLength(helper.initialNotes.length + 1)
-
-    const contents = notesAtEnd.map(n => n.content)
-    expect(contents).toContain(
-      'async/await simplifies making async calls'
-    )
+      .expect(401)
   })
 
   test('fails with status code 400 if data invaild', async () => {

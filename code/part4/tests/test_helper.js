@@ -1,5 +1,7 @@
+const bcrypt = require('bcrypt')
 const Note = require('../models/note')
 const User = require('../models/user')
+
 
 const initialNotes = [
   {
@@ -13,6 +15,15 @@ const initialNotes = [
     important: true
   }
 ]
+
+const getInitialUsers = async () => {
+  const passwordHash = await bcrypt.hash('sekret', 10)
+  const initialUsers = [
+    { username: 'root', passwordHash }
+  ]
+  return initialUsers
+}
+
 
 const nonExistingId = async () => {
   const note = new Note({ content: 'willremovethissoon', date: new Date() })
@@ -33,5 +44,5 @@ const usersInDb = async () => {
 }
 
 module.exports = {
-  initialNotes, nonExistingId, notesInDb, usersInDb
+  initialNotes, getInitialUsers, nonExistingId, notesInDb, usersInDb
 }
