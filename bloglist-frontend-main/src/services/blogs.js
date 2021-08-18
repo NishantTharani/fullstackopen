@@ -8,12 +8,27 @@ const setToken = newToken => {
 }
 
 const getAll = () => {
-  const request = axios.get(baseUrl, {
-    headers: {
-      Authorization: token
-    }
-  })
-  return request.then(response => response.data)
+  if (token !== null) {
+    const request = axios.get(baseUrl, {
+      headers: {
+        Authorization: token
+      }
+    })
+    return request.then(response => response.data)
+  } else {
+    return Promise.resolve([])
+  }
 }
 
-export default { getAll, setToken }
+const createBlog = (newBlog) => {
+  if (token !== null) {
+    const request = axios.post(baseUrl, newBlog,{
+      headers: {
+        Authorization: token
+      }
+    })
+    return request.then(response => response.data)
+  }
+}
+
+export default { getAll, setToken, createBlog }
