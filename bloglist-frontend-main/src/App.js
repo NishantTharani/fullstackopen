@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import CreateForm from './components/CreateForm'
+import Togglable from "./components/Togglable";
 
 
 const App = () => {
@@ -31,41 +33,6 @@ const App = () => {
     )
   }
 
-  const createForm = () => {
-    return (
-      <form onSubmit={handleCreate}>
-        <div>
-          title
-          <input
-            type="text"
-            value={title}
-            name="Title"
-            onChange={({target}) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          author
-          <input
-            type="text"
-            value={author}
-            name="Author"
-            onChange={({target}) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          url
-          <input
-            type="text"
-            value={url}
-            name="URL"
-            onChange={({target}) => setUrl(target.value)}
-          />
-        </div>
-        <button type="submit">create</button>
-      </form>
-    )
-  }
-
   const handleLogin = async (event) => {
     event.preventDefault();
 
@@ -86,8 +53,8 @@ const App = () => {
     }
   }
 
-  const handleCreate = async (event) => {
-    event.preventDefault();
+  const createBlog = async (title, author, url) => {
+    toggleRef.current.toggleVisibility()
 
     const blogObj = {
       title: title,
@@ -109,9 +76,7 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [blogs, setBlogs] = useState([])
 
-  const [title, setTitle] = useState("")
-  const [author, setAuthor] = useState("")
-  const [url, setUrl] = useState("")
+  const toggleRef = useRef()
 
 
   useEffect(() => {
@@ -147,12 +112,17 @@ const App = () => {
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog}/>
           )}
-          <h2>create new</h2>
-          {createForm()}
+
+          <Togglable buttonLabel={"create blog"} ref={toggleRef}>
+            <h2>create new</h2>
+            <CreateForm
+              createBlog={createBlog}
+            />
+          </Togglable>
         </div>
       }
     </div>
   )
-}
+};
 
 export default App
