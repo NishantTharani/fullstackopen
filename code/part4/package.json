@@ -33,5 +33,10 @@
   },
   "jest": {
     "testEnvironment": "node"
+  },
+  "eslintConfig": {
+    "extends": [
+      "plugin:cypress/recommended"
+    ]
   }
 }

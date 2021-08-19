@@ -24,5 +24,5 @@ describe('<Blog />', () => {
   test('author is displayed', () => {
     expect(component.container.querySelector('.blog-author')).toBeDefined()
   })
-  
+
 })

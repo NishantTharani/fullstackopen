@@ -9,7 +9,7 @@ import Togglable from "./components/Togglable";
 const App = () => {
   const loginForm = () => {
     return (
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleLogin} id={"loginForm"}>
         <div>
           username
           <input
