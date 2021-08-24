@@ -1,3 +1,5 @@
+import anecdoteService from "../services/anecdotes"
+
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -44,24 +46,33 @@ const reducer = (state = [], action) => {
   }
 }
 
-export const voteAnecdote = (noteId) => {
-  return {
-    type: "VOTE_ANECDOTE",
-    id: noteId
+export const voteAnecdote = (id) => {
+  return async dispatch => {
+    const data = await anecdoteService.upvoteOne(id)
+    dispatch({
+      type: 'VOTE_ANECDOTE',
+      id: data.id
+    })
   }
 }
 
-export const addAnecdote = (newAnecdote) => {
-  return {
-    type: "ADD_ANECDOTE",
-    data: newAnecdote
+export const addAnecdote = (content) => {
+  return async dispatch => {
+    const data = await anecdoteService.addOne(content)
+    dispatch({
+      type: 'ADD_ANECDOTE',
+      data: data
+    })
   }
 }
 
-export const initAnecdotes = (anecdotesData) => {
-  return {
-    type: 'INIT_ANECDOTES',
-    data: anecdotesData
+export const initAnecdotes = () => {
+  return async dispatch => {
+    const data = await anecdoteService.getAll()
+    dispatch({
+      type: 'INIT_ANECDOTES',
+      data: data
+    })
   }
 }
 
