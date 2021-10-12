@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {Link, Switch, Route} from "react-router-dom";
+import {Link, Switch, Route, useParams, useHistory} from "react-router-dom";
 
 const Menu = () => {
   const padding = {
@@ -18,10 +18,22 @@ const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map(anecdote => <li key={anecdote.id} ><Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link></li>)}
     </ul>
   </div>
 )
+
+const Anecdote = ({ anecdotes }) => {
+  const id = useParams().id
+  const anecdote = anecdotes.find(a => a.id === id)
+  return (
+    <div>
+      <h2>{anecdote.content} by {anecdote.author}</h2>
+      <p>has {anecdote.votes} votes</p>
+      <p>for more information see <a href={anecdote.info}>{anecdote.info}</a></p>
+    </div>
+  )
+}
 
 const About = () => (
   <div>
@@ -50,6 +62,8 @@ const CreateNew = (props) => {
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
 
+  const history = useHistory()
+
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -59,6 +73,7 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    history.push("/")
   }
 
   return (
@@ -132,6 +147,9 @@ const App = () => {
         </Route>
         <Route path={"/create"}>
           <CreateNew addNew={addNew} />
+        </Route>
+        <Route path={"/anecdotes/:id"}>
+          <Anecdote anecdotes={anecdotes} />
         </Route>
         <Route path={"/"}>
           <h1>Software anecdotes</h1>
