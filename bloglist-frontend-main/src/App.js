@@ -6,6 +6,7 @@ import CreateForm from './components/CreateForm'
 import Togglable from "./components/Togglable";
 import { useSelector, useDispatch } from 'react-redux'
 import {setErrorMsg} from "./reducers/errorMsgReducer";
+import {initBlogs, addBlog} from "./reducers/blogReducer";
 
 
 const App = () => {
@@ -48,10 +49,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      dispatch(setErrorMsg("Invalid Login Credentials"))
-      setTimeout(() => {
-        dispatch(setErrorMsg(""))
-      }, 5000)
+      dispatch(setErrorMsg("Invalid Login Credentials", 5))
     }
   }
 
@@ -64,7 +62,7 @@ const App = () => {
       url: url
     }
 
-    await blogService.createBlog(blogObj)
+    dispatch(addBlog(blogObj))
   }
 
   const handleLogout = () => {
@@ -74,21 +72,17 @@ const App = () => {
 
   const dispatch = useDispatch()
   const errorMsg = useSelector(state => state.errorMsg)
+  const blogs = useSelector(state => state.blogs)
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);  // the entire user object
-  const [blogs, setBlogs] = useState([])
 
   const toggleRef = useRef()
 
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      {
-        setBlogs(blogs)
-      }
-    )
+    dispatch(initBlogs())
   }, [user])
 
   useEffect(() => {

@@ -11,10 +11,18 @@ const reducer = (state = [], action) => {
   }
 }
 
-export const setErrorMsg = (msg) => {
-  return {
-    type: 'SET_MSG',
-    data: msg
+export const setErrorMsg = (msg, duration= 5) => {
+  return async dispatch => {
+    dispatch({
+      type: 'SET_MSG',
+      data: msg
+    })
+    setTimeout(() => {
+      dispatch({
+        type: 'SET_MSG',
+        data: ''
+      })
+    }, duration * 1000)
   }
 }
 
