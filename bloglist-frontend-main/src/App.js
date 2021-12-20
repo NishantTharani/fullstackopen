@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import userLikesService from './services/userLikes'
 import CreateForm from './components/CreateForm'
 import Togglable from "./components/Togglable";
 import { useSelector, useDispatch } from 'react-redux'
@@ -45,6 +46,7 @@ const App = () => {
       })
       setUser(user)
       blogService.setToken(user.token)
+      userLikesService.setToken(user.token)
       window.localStorage.setItem('blogUserJSON', JSON.stringify(user))
       setUsername('')
       setPassword('')

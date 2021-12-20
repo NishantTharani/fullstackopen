@@ -8,6 +8,7 @@ const Blog = require('./models/blog.js')
 const blogsRouter = require('./controllers/blogs')
 const userRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
+const userLikesRouter = require('./controllers/userLikes')
 const middleware = require('./utils/middleware')
 
 
@@ -25,6 +26,7 @@ app.use(express.json())
 app.use('/api/blogs', middleware.tokenExtractor, middleware.userExtractor, blogsRouter)
 app.use('/api/users', userRouter)
 app.use('/api/login', loginRouter)
+app.use('/api/userlikes', middleware.tokenExtractor, middleware.userExtractor, userLikesRouter)
 
 app.use(middleware.errorHandler)
 
