@@ -4,6 +4,8 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import CreateForm from './components/CreateForm'
 import Togglable from "./components/Togglable";
+import { useSelector, useDispatch } from 'react-redux'
+import {setErrorMsg} from "./reducers/errorMsgReducer";
 
 
 const App = () => {
@@ -46,9 +48,9 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage("Invalid Login Credentials")
+      dispatch(setErrorMsg("Invalid Login Credentials"))
       setTimeout(() => {
-        setErrorMessage(null)
+        dispatch(setErrorMsg(""))
       }, 5000)
     }
   }
@@ -70,10 +72,12 @@ const App = () => {
     setUser(null);
   }
 
+  const dispatch = useDispatch()
+  const errorMsg = useSelector(state => state.errorMsg)
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);  // the entire user object
-  const [errorMessage, setErrorMessage] = useState(null)
   const [blogs, setBlogs] = useState([])
 
   const toggleRef = useRef()
@@ -102,7 +106,7 @@ const App = () => {
 
       {user === null ?
         <div>
-          <p>{errorMessage}</p>
+          <p>{errorMsg}</p>
           {loginForm()}
         </div>
         :
