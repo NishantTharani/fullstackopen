@@ -48,26 +48,6 @@ describe('adding blog posts', () => {
     expect(blogsAtEnd).toHaveLength(1)
   })
 
-  test('missing likes property defaults to zero', async () => {
-    const newBlog = {
-      title: 'Test blog with no likes',
-      author: 'Poster who nobody likes yet :(',
-      url: 'none'
-    }
-
-    await api
-      .post('/api/blogs')
-      .set('Authorization', `bearer ${token}`)
-      .send(newBlog)
-      .expect(200)
-
-    const blogs = await helper.blogsInDb()
-    const blog = blogs.filter(blog => blog.title === 'Test blog with no likes')[0]
-
-    expect(blog.likes).toEqual(0)
-
-  })
-
   test('creation fails if missing title or url properties', async () => {
     const newBlog = {
       author: 'Formless author',

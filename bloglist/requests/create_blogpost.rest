@@ -4,6 +4,5 @@ Content-Type: application/json
 {
   "title": "Eating out with allergies",
   "author": "Messrs Padfoot and Prongs",
-  "url": "http://localhost",
-  "likes": 5000
+  "url": "http://localhost"
 }

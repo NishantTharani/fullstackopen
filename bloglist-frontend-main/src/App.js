@@ -93,6 +93,7 @@ const App = () => {
       const localUser = JSON.parse(localUserJSON)
       setUser(localUser)
       blogService.setToken(localUser.token)
+      userLikesService.setToken(localUser.token)
     }
   }, [])
 
