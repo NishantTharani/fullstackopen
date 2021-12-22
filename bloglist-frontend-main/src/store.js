@@ -3,10 +3,12 @@ import {composeWithDevTools} from "redux-devtools-extension";
 import thunk from "redux-thunk";
 import errorMsgReducer from "./reducers/errorMsgReducer";
 import blogReducer from "./reducers/blogReducer";
+import userReducer from "./reducers/userReducer";
 
 const reducer = combineReducers({
   errorMsg: errorMsgReducer,
-  blogs: blogReducer
+  blogs: blogReducer,
+  user: userReducer
 })
 
 const store = createStore(

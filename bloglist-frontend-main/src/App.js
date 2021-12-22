@@ -8,6 +8,7 @@ import Togglable from "./components/Togglable";
 import { useSelector, useDispatch } from 'react-redux'
 import {setErrorMsg} from "./reducers/errorMsgReducer";
 import {initBlogs, addBlog} from "./reducers/blogReducer";
+import {setUser} from "./reducers/userReducer";
 
 
 const App = () => {
@@ -44,7 +45,7 @@ const App = () => {
       const user = await loginService.login({
         username, password
       })
-      setUser(user)
+      dispatch(setUser(user))
       blogService.setToken(user.token)
       userLikesService.setToken(user.token)
       window.localStorage.setItem('blogUserJSON', JSON.stringify(user))
@@ -69,16 +70,16 @@ const App = () => {
 
   const handleLogout = () => {
     window.localStorage.removeItem('blogUserJSON');
-    setUser(null);
+    dispatch(setUser(null));
   }
 
   const dispatch = useDispatch()
   const errorMsg = useSelector(state => state.errorMsg)
   const blogs = useSelector(state => state.blogs)
+  const user = useSelector(state => state.user)
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);  // the entire user object
 
   const toggleRef = useRef()
 
@@ -91,7 +92,7 @@ const App = () => {
     const localUserJSON = window.localStorage.getItem('blogUserJSON')
     if (localUserJSON) {
       const localUser = JSON.parse(localUserJSON)
-      setUser(localUser)
+      dispatch(setUser(localUser))
       blogService.setToken(localUser.token)
       userLikesService.setToken(localUser.token)
     }
