@@ -1,71 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
-import blogService from './services/blogs'
-import loginService from './services/login'
-import userLikesService from './services/userLikes'
-import CreateForm from './components/CreateForm'
-import Togglable from "./components/Togglable";
 import { useSelector, useDispatch } from 'react-redux'
-import {setErrorMsg} from "./reducers/errorMsgReducer";
-import {initBlogs, addBlog} from "./reducers/blogReducer";
+
+import {
+  BrowserRouter as Router,
+  Routes, Route, Link
+} from "react-router-dom"
+
+import Home from "./components/Home";
 import {setUser} from "./reducers/userReducer";
+import Users from "./components/Users";
+import blogService from "./services/blogs";
+import userLikesService from "./services/userLikes";
+import userService from "./services/users";
+
 
 
 const App = () => {
-  const loginForm = () => {
-    return (
-      <form onSubmit={handleLogin} id={"loginForm"}>
-        <div>
-          username
-          <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({target}) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-          password
-          <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({target}) => setPassword(target.value)}
-          />
-        </div>
-        <button type="submit">login</button>
-      </form>
-    )
-  }
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-
-    try {
-      const user = await loginService.login({
-        username, password
-      })
-      dispatch(setUser(user))
-      blogService.setToken(user.token)
-      userLikesService.setToken(user.token)
-      window.localStorage.setItem('blogUserJSON', JSON.stringify(user))
-      setUsername('')
-      setPassword('')
-    } catch (exception) {
-      dispatch(setErrorMsg("Invalid Login Credentials", 5))
-    }
-  }
-
-  const createBlog = async (title, author, url) => {
-    toggleRef.current.toggleVisibility()
-
-    const blogObj = {
-      title: title,
-      author: author,
-      url: url
-    }
-
-    dispatch(addBlog(blogObj))
+  const padding = {
+    padding: 5
   }
 
   const handleLogout = () => {
@@ -74,19 +27,7 @@ const App = () => {
   }
 
   const dispatch = useDispatch()
-  const errorMsg = useSelector(state => state.errorMsg)
-  const blogs = useSelector(state => state.blogs)
   const user = useSelector(state => state.user)
-
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
-  const toggleRef = useRef()
-
-
-  useEffect(() => {
-    dispatch(initBlogs())
-  }, [user])
 
   useEffect(() => {
     const localUserJSON = window.localStorage.getItem('blogUserJSON')
@@ -95,35 +36,29 @@ const App = () => {
       dispatch(setUser(localUser))
       blogService.setToken(localUser.token)
       userLikesService.setToken(localUser.token)
+      userService.setToken(localUser.token)
+    } else {
+      dispatch(setUser(null))
     }
   }, [])
 
   return (
-    <div>
+    <Router>
       <h2>blogs</h2>
-
       {user === null ?
-        <div>
-          <p>{errorMsg}</p>
-          {loginForm()}
-        </div>
+        <p></p>
         :
-        <div>
-          <h2>blogs</h2>
-          {user.name} is logged in <button onClick={handleLogout}>logout</button>
-          {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog}/>
-          )}
-
-          <Togglable buttonLabel={"create blog"} ref={toggleRef}>
-            <h2>create new</h2>
-            <CreateForm
-              createBlog={createBlog}
-            />
-          </Togglable>
-        </div>
+        <div>{user.name} is logged in <button onClick={handleLogout}>logout</button></div>
       }
-    </div>
+
+      <Routes>
+        <Route exact path="/" element={<Home />} />
+
+        <Route exact path="/users" element={<Users />} />
+
+
+      </Routes>
+    </Router>
   )
 };
 
