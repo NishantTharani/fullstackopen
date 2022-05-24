@@ -22,7 +22,6 @@ const Users = () => {
   }
 
 
-  const dispatch = useDispatch()
   const user = useSelector(state => state.user)
   const [users, setUsers] = useState([])
 
@@ -39,7 +38,7 @@ const Users = () => {
         <div>
           <h2>Users</h2>
           {users.map(userObj =>
-            <p>{userObj.name} - {userObj.blogs.length} </p>
+            <p><a href={"/users/" + userObj.id}>{userObj.name}</a> - {userObj.blogs.length}</p>
             )
           }
         </div>

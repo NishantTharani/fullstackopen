@@ -20,6 +20,19 @@ const getUsers = () => {
   }
 }
 
+const getUser = (userId) => {
+  if (token !== null) {
+    const request = axios.get(`${baseUrl}/${userId}`, {
+      headers: {
+        Authorization: token
+      }
+    })
+    return request.then(response => response.data)
+  } else {
+    return null
+  }
+}
 
 
-export default { setToken, getUsers }
+
+export default { setToken, getUsers, getUser }
