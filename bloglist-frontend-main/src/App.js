@@ -10,6 +10,7 @@ import Home from "./components/Home";
 import {setUser} from "./reducers/userReducer";
 import Users from "./components/Users";
 import User from "./components/User";
+import BlogPage from "./components/BlogPage";
 import blogService from "./services/blogs";
 import userLikesService from "./services/userLikes";
 import userService from "./services/users";
@@ -58,6 +59,8 @@ const App = () => {
         <Route exact path="/users" element={<Users />} />
 
         <Route path="/users/:id" element={<User />} />
+
+        <Route path="/blogs/:id" element={<BlogPage />} />
 
       </Routes>
     </Router>

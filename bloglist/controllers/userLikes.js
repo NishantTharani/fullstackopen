@@ -32,8 +32,14 @@ userLikesRouter.post('/:id', async (request, response) => {
     console.log(out)
     response.json(out)
   }
+})
 
+userLikesRouter.get('/:id', async (request, response) => {
+  const blogId = request.params.id
 
+  const likes = await UserLikes.countDocuments({blogId: blogId})
+
+  response.json(likes)
 })
 
 userLikesRouter.delete('/:id', async (request, response) => {

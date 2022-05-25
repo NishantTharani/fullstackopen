@@ -42,4 +42,17 @@ const deleteBlog = (blogId) => {
   }
 }
 
-export default { getAll, setToken, createBlog, deleteBlog }
+const getBlog = (blogId) => {
+  if (token !== null) {
+    const request = axios.get(`${baseUrl}/${blogId}`, {
+      headers: {
+        Authorization: token
+      }
+    })
+    return request.then(response => response.data)
+  } else {
+    return null
+  }
+}
+
+export default { getAll, setToken, createBlog, deleteBlog, getBlog }

@@ -21,6 +21,20 @@ const getLikedBlogs = () => {
   }
 }
 
+const getLikesOfBlog = (blogId) => {
+  if (token !== null) {
+    const request = axios.get(`${baseUrl}/${blogId}`, {
+      headers: {
+        Authorization: token
+      }
+    })
+
+    return request.then(response => response.data)
+  } else {
+    return 0
+  }
+}
+
 const toggleLikeBlog = (blogId) => {
   if (token !== null) {
     const request = axios.post(`${baseUrl}/${blogId}`, null,{
@@ -44,4 +58,4 @@ const unLikeBlog = (blogId) => {
 }
 
 
-export default { getLikedBlogs, setToken, toggleLikeBlog, unLikeBlog }
+export default { getLikedBlogs, setToken, toggleLikeBlog, unLikeBlog, getLikesOfBlog }

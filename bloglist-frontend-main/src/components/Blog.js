@@ -5,11 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 
 
 const Blog = ({blog}) => {
-  const toggleLikeFactory = (blogId) => {
-    return () => {
-      dispatch(toggleLikeBlog(blogId))
-    }
-  }
+
 
   const deleteBlogFactory = (blogId) => {
     return () => {
@@ -20,9 +16,8 @@ const Blog = ({blog}) => {
   const dispatch = useDispatch()
   return (
     <div>
-      <span className={"blog-title"}>{blog.title} </span>
+      <span className={"blog-title"}><a href={"/blogs/" + blog.id}>{blog.title} </a></span>
       <span className={"blog-author"}>{blog.author} </span>
-      <button onClick={toggleLikeFactory(blog.id)}>{blog.liked ? "unlike" : "like"}</button>
       <button onClick={deleteBlogFactory(blog.id)}>delete?</button>
     </div>
   )
