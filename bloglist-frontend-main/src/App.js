@@ -46,13 +46,15 @@ const App = () => {
 
   return (
     <Router>
-      <h2>blogs</h2>
-      {user === null ?
-        <p></p>
-        :
-        <div>{user.name} is logged in <button onClick={handleLogout}>logout</button></div>
-      }
-
+      <div>
+        <Link style={padding} to="/">home</Link>
+        <Link style={padding} to="/users">users</Link>
+        {user
+          ? <span><em>{user.name} is logged in</em> <button onClick={handleLogout}>logout</button></span>
+          :
+          <span></span>
+        }
+      </div>
       <Routes>
         <Route exact path="/" element={<Home />} />
 
