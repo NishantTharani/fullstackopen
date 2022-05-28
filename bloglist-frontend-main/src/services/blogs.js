@@ -20,6 +20,18 @@ const getAll = () => {
   }
 }
 
+const addBlogComment = (blogId, commentObj) => {
+  if (token !== null) {
+    const request = axios.post(`${baseUrl}/${blogId}/comments`, commentObj, {
+      headers: {
+        Authorization: token
+      }
+    })
+
+    return request.then(response => response.data)
+  }
+}
+
 const createBlog = (newBlog) => {
   if (token !== null) {
     const request = axios.post(baseUrl, newBlog,{
@@ -55,4 +67,4 @@ const getBlog = (blogId) => {
   }
 }
 
-export default { getAll, setToken, createBlog, deleteBlog, getBlog }
+export default { getAll, setToken, createBlog, deleteBlog, getBlog, addBlogComment }

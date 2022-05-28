@@ -2,6 +2,7 @@ import blogService from "../services/blogs"
 import userLikesService from "../services/userLikes"
 
 const reducer = (state = [], action) => {
+  let blogObj
   console.log('state now: ', state)
   console.log('action', action)
 
@@ -12,8 +13,19 @@ const reducer = (state = [], action) => {
     case 'ADD_BLOG':
       return [...state, action.data]
 
+    case 'ADD_BLOG_COMMENT':
+      blogObj = state.find(blogObj => blogObj.id === action.blogId)
+      return [
+        ...state.filter(blogObj => blogObj.id !== action.blogId),
+        {
+          ...blogObj,
+          comments: blogObj.comments.concat(action.data)
+        }
+      ]
+        .sort((a, b) => (a.id > b.id) ? 1 : (a.id < b.id) ? -1 : 0)
+
     case 'TOGGLE_LIKE_BLOG':
-      let blogObj = state.find(blogObj => blogObj.id === action.blogId)
+      blogObj = state.find(blogObj => blogObj.id === action.blogId)
       return [...state.filter(blogObj => blogObj.id !== action.blogId),
         {
           ...blogObj,
@@ -53,6 +65,17 @@ export const addBlog = (blogObj) => {
     dispatch({
       type: 'ADD_BLOG',
       data: blogData
+    })
+  }
+}
+
+export const addComment = (id, commentObj) => {
+  return async dispatch => {
+    const commentData = await blogService.addBlogComment(id, commentObj)
+    dispatch({
+      type: 'ADD_BLOG_COMMENT',
+      data: commentData,
+      blogId: id
     })
   }
 }
