@@ -4,12 +4,19 @@ import Books from "./components/Books"
 import NewBook from "./components/NewBook"
 import LoginForm from "./components/LoginForm"
 import Recommendations from "./components/Recommendations"
-import { useApolloClient } from "@apollo/client"
+import { useApolloClient, useQuery } from "@apollo/client"
+import { ALL_BOOKS } from "./queries/queries.js"
 
 const App = () => {
   const [page, setPage] = useState("authors")
   const [token, setToken] = useState(null)
   const client = useApolloClient()
+  const [filteredGenre, setFilteredGenre] = useState("")
+  const [bookAdded, setBookAdded] = useState(false)
+
+  const booksResult = useQuery(ALL_BOOKS, {
+    variables: { genre: filteredGenre },
+  })
 
   const logout = () => {
     setToken(null)
@@ -32,9 +39,16 @@ const App = () => {
 
       <Authors show={page === "authors"} />
 
-      <Books show={page === "books"} />
+      <Books
+        show={page === "books"}
+        booksResult={booksResult}
+        filteredGenre={filteredGenre}
+        setFilteredGenre={setFilteredGenre}
+        bookAdded={bookAdded}
+        setBookAdded={setBookAdded}
+      />
 
-      <NewBook show={page === "add"} />
+      <NewBook show={page === "add"} setBookAdded={setBookAdded} />
 
       <Recommendations show={page === "recommendations"} />
 

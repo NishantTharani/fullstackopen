@@ -1,10 +1,12 @@
-import { ALL_BOOKS } from "../queries/queries.js"
-import { useQuery } from "@apollo/client"
-import { useState } from "react"
+import { useApolloClient } from "@apollo/client"
 
 const Books = (props) => {
-  const booksResult = useQuery(ALL_BOOKS)
-  const [filteredGenre, setFilteredGenre] = useState("")
+  const booksResult = props.booksResult
+  const filteredGenre = props.filteredGenre
+  const setFilteredGenre = props.setFilteredGenre
+  const bookAdded = props.bookAdded
+  const setBookAdded = props.setBookAdded
+  const client = useApolloClient()
 
   if (booksResult.loading) {
     return <div>loading...</div>
@@ -19,6 +21,13 @@ const Books = (props) => {
       setFilteredGenre("")
     } else {
       setFilteredGenre(event.target.value)
+    }
+
+    if (bookAdded) {
+      client.refetchQueries({
+        include: "all",
+      })
+      setBookAdded(false)
     }
   }
 
