@@ -1,9 +1,27 @@
-const { ApolloServer, gql } = require("apollo-server")
-const { v1: uuid } = require("uuid")
-const { Author } = require("./models/author")
-const { Book } = require("./models/book")
+const { ApolloServer } = require("@apollo/server")
+const { startStandaloneServer } = require("@apollo/server/standalone")
 
-const typeDefs = gql`
+const mongoose = require("mongoose")
+mongoose.set("strictQuery", false)
+require("dotenv").config()
+
+const MONGODB_URI = process.env.MONGODB_URI
+
+console.log("connecting to", MONGODB_URI)
+
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    console.log("connected to MongoDB")
+  })
+  .catch((error) => {
+    console.log("error connection to MongoDB:", error.message)
+  })
+
+const Author = require("./models/author.js")
+const Book = require("./models/book")
+
+const typeDefs = `
   type Book {
     title: String!
     published: Int!
@@ -26,10 +44,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    addAuthor(
-        name: String!
-        born: Int
-    )
+    addAuthor(name: String!, born: Int): Author
 
     addBook(
       title: String!
@@ -47,20 +62,27 @@ const resolvers = {
     bookCount: async () => Book.countDocuments(),
     authorCount: async () => Author.countDocuments(),
     allBooks: async (root, args) => {
-      return Book.find({})
-
-      //   return books
-      //     .filter((book) => (args.author ? book.author === args.author : true))
-      //     .filter((book) =>
-      //       args.genre ? book.genres.includes(args.genre) : true
-      //     )
+      if (args.genre) {
+        return Book.find({ genres: args.genre })
+      } else {
+        return Book.find({})
+      }
     },
     allAuthors: async () => Author.find({}),
   },
 
+  Book: {
+    author: async (book) => {
+      const authorID = book.author._id
+      const author = await Author.findById(authorID)
+      return author
+    },
+  },
+
   Mutation: {
     addAuthor: async (root, args) => {
-      const author = new Author({ ...args })
+      //   const author = new Author({ ...args })
+      const author = new Author({ name: args.name, born: args.born })
       return author.save()
     },
 
@@ -90,6 +112,8 @@ const server = new ApolloServer({
   resolvers,
 })
 
-server.listen().then(({ url }) => {
+startStandaloneServer(server, {
+  listen: { port: 4000 },
+}).then(({ url }) => {
   console.log(`Server ready at ${url}`)
 })

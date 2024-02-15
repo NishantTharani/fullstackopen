@@ -9,9 +9,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "^3.8.1",
-    "graphql": "^16.5.0",
+    "@apollo/server": "^4.10.0",
+    "dotenv": "^16.4.4",
+    "graphql": "^16.8.1",
     "mongoose": "^8.1.2",
     "mongoose-unique-validator": "^5.0.0"
+  },
+  "devDependencies": {
+    "@graphql-eslint/eslint-plugin": "^3.20.1",
+    "eslint": "^8.56.0"
   }
 }
